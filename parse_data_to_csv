@@ -6,36 +6,39 @@ use Data::Dumper;
 # create a hash to keep everything sorted
 my %data;
 # global placeholders dirty but effective
-my ($dir_id,$proc,$size,$job_id,$task_id);
+my ($type_id,$dir_id,$proc,$size,$job_id,$task_id);
 # build up a pre-compiled regex to parse the file
-my $file_re = qr{(?:Dynamic|Static)_(\d+)/(?:Dynamic|Static)-(\d+)-(\d+).o(\d+).(\d+)};
+my $file_re = qr{(Dynamic|Static|Sequential)_(\d+)/(?:Dynamic|Static|Sequential)-(\d+)-(\d+).o(\d+).(\d+)};
 # for every line of input extract the timing data
 while(<>){
   # if the line starts with Time, store it in %data
   if(m/^Time/){
-    push @{$data{$dir_id}{$proc}{$size}{$job_id}{$task_id}}, m/^Time:\s*(.*)$/;
+    push @{$data{$type_id}{$dir_id}{$proc}{$size}{$job_id}{$task_id}}, m/^Time:\s*(.*)$/;
   }
   # new file, so re-set the values based on the file
   else{
-   ($dir_id,$proc,$size,$job_id,$task_id) = $_ =~ $file_re;
+   ($type_id,$dir_id,$proc,$size,$job_id,$task_id) = $_ =~ $file_re;
   }
 }
 
 # start with a csv header
-print qq{dir_id,proc,size,job_id,task_id,time\n};
+print qq{type_id,dir_id,proc,size,job_id,task_id,time\n};
 # now start looping over the data
-foreach my $dir_id (sort keys %data){
-  my $dir = $data{$dir_id};
-  foreach my $proc_id (sort keys %$dir){
-    my $proc = $dir->{$proc_id};
-    foreach my $size_id (sort keys %$proc){
-      my $size = $proc->{$size_id};
-      foreach my $job_id (sort keys %$size){
-        my $job = $size->{$job_id};
-        foreach my $task_id (sort keys %$job){
-          my $task = $job->{$task_id};
-          foreach my $time (@$task){
-            printf "%s,%s,%s,%s,%s,%s\n", $dir_id, $proc_id, $size_id, $job_id, $task_id, $time;
+foreach my $type_id (sort keys %data){
+  my $type = $data{$type_id};
+  foreach my $dir_id (sort keys %$type){
+    my $dir = $type->{$dir_id};
+    foreach my $proc_id (sort keys %$dir){
+      my $proc = $dir->{$proc_id};
+      foreach my $size_id (sort keys %$proc){
+        my $size = $proc->{$size_id};
+        foreach my $job_id (sort keys %$size){
+          my $job = $size->{$job_id};
+          foreach my $task_id (sort keys %$job){
+            my $task = $job->{$task_id};
+            foreach my $time (@$task){
+              printf "%s,%s,%s,%s,%s,%s\n", $dir_id, $proc_id, $size_id, $job_id, $task_id, $time;
+            }
           }
         }
       }

@@ -1,2 +1,2 @@
 #!/usr/bin/sh
-rm -rf Dynamic_* Static_*
+rm -rf Dynamic_* Static_* Sequential_*

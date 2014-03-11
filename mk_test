@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-for my $type (qw{Static Dynamic}){
+for my $type (qw{Static Dynamic Sequential}){
   for( my $i=10; $i <= 100; $i+=5){
     my $dir = "./${type}_${i}00";
     unless( -d $dir ){

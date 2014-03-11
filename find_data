@@ -4,5 +4,6 @@
 # where the whole name matches this pattern
 # print the result 
 # then grep the file for any lines that look like Time:
-find . -depth -type f -wholename "*ic_*/*ic-*-*.o*" -print -exec grep "Time:" {} \;
+find . -depth -type f -regextype egrep -regex './(Static|Dynamic|Sequential)_[0-9]+/(Static|Dynamic|Sequential)-[0-9]+-[0-9]+[.]o[0-9]+[.][0-9]+' -print -exec grep "Time:" {} \;
+
 
