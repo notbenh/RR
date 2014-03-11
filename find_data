@@ -1,0 +1,8 @@
+#!/usr/bin/sh
+# find in this dir .
+# only items of type file
+# where the whole name matches this pattern
+# print the result 
+# then grep the file for any lines that look like Time:
+find . -depth -type f -wholename "*ic_*/*ic-*-*.o*" -print -exec grep "Time:" {} \;
+

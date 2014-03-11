@@ -1,0 +1,2 @@
+#!/usr/bin/sh
+find_data| parse_data_to_csv > data.csv

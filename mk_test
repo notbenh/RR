@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+for my $type (qw{Static Dynamic}){
+  for( my $i=10; $i <= 100; $i+=5){
+    my $dir = "./${type}_${i}00";
+    unless( -d $dir ){
+      print "Creating test dir: $dir\n";
+      mkdir $dir;
+      for my $proc (2,4,6){
+        for my $size (500){
+          for my $ext (qw{e o pe po}){
+            for my $job_id( qw{27734 27735 27736} ){
+              for my $task_id( 1..10 ){
+                my $file = "./${type}_${i}00/${type}-${proc}-${size}.${ext}${job_id}.${task_id}";
+                unless (-e $file){
+                  print"  Crating test file: $file\n";
+                  # create a file handle to write to the file
+                  open( my $fh, ">$file") or die "Can not open up $file: $!"; 
+                  # randomly pick a number of linesbetween 1 and 10
+                  # then build up a Time: line with a ranom time
+                  for my $line (map{ sprintf "Time: %s\n", rand(1000) } 1..int(rand(10))+1 ){
+                    # then print the line to the file
+                    print $fh $line;
+                  }
+                  close $fh; # close our file handle
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
